@@ -1,76 +1,32 @@
 # API
 
-Feathers core API is very small and an initialized application provides the same functionality as an [Express 4](http://expressjs.com/en/4x/api.html) application. The differences and additional methods and their usage are outlined in this chapter. For the service API refer to the [Services chapter](../services/readme.md).
+This section describes all the APIs of Feathers and its individual modules.
 
-## configure
-
-`app.configure(callback)` runs a `callback` function with the application as the context (`this`). It can be used to initialize plugins or services.
-
-```js
-function setupService() {
-    this.use('/todos', todoService);
-}
-
-app.configure(setupService);
-```
-
-
-## listen
-
-`app.listen([port])` starts the application on the given port. It will first call the original [Express app.listen([port])](http://expressjs.com/api.html#app.listen), then run `app.setup(server)` (see below) with the server object and then return the server object.
-
-## setup
-
-`app.setup(server)` is used to initialize all services by calling each services `.setup(app, path)` method (if available).
-It will also use the `server` instance passed (e.g. through `http.createServer`) to set up SocketIO (if enabled) and any other provider that might require the server instance.
-
-Normally `app.setup` will be called automatically when starting the application via `app.listen([port])` but there are cases when you need to initialize the server separately as described in the [VHost, SSL and sub-app chapter](../middleware/mounting.md).
-
-## use
-
-`app.use([path], service)` works just like [Express app.use([path], middleware)](http://expressjs.com/api.html#app.use) but additionally allows to register a service object (an object which at least provides one of the service methods as outlined in the Services section) instead of the middleware function. Note that REST services are registered in the same order as any other middleware so the below example will allow the `/todos` service only to [Passport](http://passportjs.org/) authenticated users.
-
-```js
-// Serve public folder for everybody
-app.use(feathers.static(__dirname + '/public');
-// Make sure that everything else only works with authentication
-app.use(function(req,res,next){
-  if(req.isAuthenticated()){
-    next();
-  } else {
-    // 401 Not Authorized
-    next(new Error(401));
-  }
-});
-// Add a service.
-app.use('/todos', {
-  get(id) {
-    return Promise.resolve({
-      id,
-      description: `You have to do ${name}!`
-    });
-  }
-});
-```
-
-## service
-
-`app.service(path [, service])` does two things. It either returns the Feathers wrapped service object for the given path or registers a new service for that path.
-
-`app.service(path)` returns the wrapped service object for the given path. Feathers internally creates a new object from each registered service. This means that the object returned by `service(path)` will provide the same methods and functionality as your original service object but also functionality added by Feathers and its plugins (most notably it is possible to listen to service events). `path` can be the service name with or without leading and trailing slashes.
-
-```js
-app.use('/my/todos', {
-  create(data) {
-    return Promise.resolve(data);
-  }
-});
-
-var todoService = app.service('my/todos');
-// todoService is an event emitter
-todoService.on('created', todo => 
-    console.log('Created todo', todo)
-);
-```
-
-You can use `app.service(path, service)` instead `app.use(path, service)` if you want to be more explicit that you are registering a service. It is called internally by `app.use([path], service)` if a service object is passed. `app.service` does __not__ provide the Express `app.use` functionality and does not check the service object for valid methods.
+* __Core:__ Feathers core functionality
+  * [Application](application.md) - The main Feathers application API
+  * [Services](services.md) - Service objects and their methods and Feathers specific functionality
+  * [Hooks](hooks.md) - Pluggable middleware for service  methods
+  * [Events](events.md) - Events sent by Feathers service methods
+  * [Channels](channels.md) - Decide what events to send to connected real-time clients
+  * [Errors](errors.md) - A collection of error classes used throughout Feathers
+  * [Configuration](configuration.md) - A node-config wrapper to initialize configuration of a server side application.
+* __Transports:__ Expose a Feathers application as an API server
+  * [Express](express.md) - Feathers Express framework bindings, REST API provider and error middleware.
+  * [Socket.io](socketio.md) - The Socket.io real-time transport provider
+  * [Primus](primus.md) - The Primus real-time transport provider
+* __Client:__ More details on how to use Feathers on the client
+  * [Usage](client.md) - Feathers client usage in Node, React Native and the browser (also with Webpack and Browserify)
+  * [REST](client/rest.md) - Feathers client and direct REST API server usage
+  * [Socket.io](client/socketio.md) - Feathers client and direct Socket.io API server usage
+  * [Primus](client/primus.md) - Feathers client and direct Primus API server usage
+* __Authentication:__ Feathers authentication mechanism
+  * [Server](authentication/server.md) - The main authentication server configuration
+  * [Client](authentication/client.md) - A client for a Feathers authentication server
+  * [Local](authentication/local.md) - Local email/password authentication
+  * [JWT](authentication/jwt.md) - JWT authentication
+  * [OAuth1](authentication/oauth1.md) - Obtain a JWT through oAuth1
+  * [OAuth2](authentication/oauth2.md) - Obtain a JWT through oAuth2
+* __Database:__ Feathers common database adapter API and querying mechanism
+  * [Adapters](databases/adapters.md) - A list of supported database adapters
+  * [Common API](databases/common.md) - Database adapter common initialization and configuration API
+  * [Querying](databases/querying.md) - The common querying mechanism

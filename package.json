@@ -1,0 +1,49 @@
+{
+  "name": "feathers-docs",
+  "description": "Feathers documentation",
+  "version": "2.2.0",
+  "private": true,
+  "homepage": "https://github.com/feathersjs/feathers-docs",
+  "main": "",
+  "keywords": [
+    "feathers",
+    "feathers-docs"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/feathersjs/feathers-docs.git"
+  },
+  "author": {
+    "name": "Feathers contributors",
+    "email": "hello@feathersjs.com",
+    "url": "https://feathersjs.com"
+  },
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/feathersjs/feathers-docs/issues"
+  },
+  "engines": {
+    "node": ">= 6.0.0"
+  },
+  "scripts": {
+    "build": "gitbook build",
+    "build:pdf": "gitbook pdf . ./feathersjs.pdf",
+    "watch": "gitbook serve",
+    "setup": "npm install svgexport -g",
+    "netlify": "npm run setup && npm run build"
+  },
+  "directories": {},
+  "dependencies": {},
+  "devDependencies": {
+    "gitbook-plugin-advanced-emoji": "^0.2.2",
+    "gitbook-plugin-codetabs": "^1.0.0",
+    "gitbook-plugin-edit-link": "^2.0.2",
+    "gitbook-plugin-feathers-collapsible-menu": "^2.2.0",
+    "gitbook-plugin-feathers-versions": "^0.1.1",
+    "gitbook-plugin-ga": "^1.0.1",
+    "gitbook-plugin-heading-anchors": "^1.0.3",
+    "gitbook-plugin-include-codeblock": "2.2.0",
+    "gitbook-cli": "^2.3.0"
+  }
+}
